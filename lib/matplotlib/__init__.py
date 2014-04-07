@@ -1231,13 +1231,9 @@ def use(arg, warn=True, force=False):
     :func:`matplotlib.get_backend`.
 
     """
-    # Lets determine the proper backend name first
-    if arg.startswith('module://'):
-        name = arg
-    else:
-        # Lowercase only non-module backend names (modules are case-sensitive)
-        arg = arg.lower()
-        name = validate_backend(arg)
+    
+    # Force IPython backend.
+    name = "module://IPython.kernel.zmq.pylab.backend_inline"
 
     # Check if we've already set up a backend
     if 'matplotlib.backends' in sys.modules:
@@ -1248,17 +1244,9 @@ def use(arg, warn=True, force=False):
         # Unless we've been told to force it, just return
         if not force:
             return
-        need_reload = True
-    else:
-        need_reload = False
 
     # Store the backend name
     rcParams['backend'] = name
-
-    # If needed we reload here because a lot of setup code is triggered on
-    # module import. See backends/__init__.py for more detail.
-    if need_reload:
-        reload(sys.modules['matplotlib.backends'])
 
 def get_backend():
     """Return the name of the current backend."""
